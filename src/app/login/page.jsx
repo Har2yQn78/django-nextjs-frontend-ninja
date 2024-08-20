@@ -1,7 +1,9 @@
 "use client"
 // -urls -> /login
+// import { cookies } from 'next/headers'
 
-const LOGIN_URL = "http://127.0.0.1:8001/api/token/pair"
+// const LOGIN_URL = "http://127.0.0.1:8001/api/token/pair"
+const LOGIN_URL = "api/login/"
 
 export default function Page () {
 
@@ -25,6 +27,7 @@ export default function Page () {
             console.log("Logged in")
         }
     }
+    localStorage.setItem('token', 'abc')
 
     return <div className="h-[95vh]">
         <div className='max-w-md mx-auto py-5'>
