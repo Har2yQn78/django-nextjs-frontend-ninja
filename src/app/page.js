@@ -5,7 +5,7 @@ import useSWR from "swr";
 
 const fetcher = (...args) => fetch(...args).then(res => res.json())
 
-export default function Page() {
+export default function Home() {
   //when you want to Get Request you can useSWR
   const {data, error, isLoading} = useSWR("http://127.0.0.1:8001/api/hello", fetcher)
   if (error) return <div>failed to load</div>
