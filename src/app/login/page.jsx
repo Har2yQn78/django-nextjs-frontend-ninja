@@ -1,9 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
+import {useAuth} from "@/components/authProvider";
 
 const LOGIN_URL = "api/login/";
 
 export default function Page() {
+    const auth = useAuth()
     const router = useRouter(); // Move useRouter to the top level
 
     async function handleSubmit(event) {
@@ -26,10 +28,10 @@ export default function Page() {
         // const data = await response.json();
         if (response.ok) {
             console.log("Logged in");
+            auth.login()
             router.replace("/"); // Use router here to navigate to the homepage
         } else {
             console.error("Login failed");
-            router.replace("/");
         }
     }
 
