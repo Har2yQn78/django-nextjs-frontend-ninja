@@ -13,4 +13,20 @@ const NavLinks = [
     }
 ]
 
+export const NotUserLinks = [
+    {
+        label: "SignUp",
+        authRequired: false,
+        href: "/signup"
+
+    },
+       {
+        label: "Login",
+        authRequired: false,
+        href: "/login"
+
+    }
+]
+
+
 export default NavLinks
