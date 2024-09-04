@@ -2,6 +2,7 @@
 import useSWR from "swr";
 import {useEffect} from "react";
 import {useAuth} from "@/components/authProvider";
+import WaitlistForm from "@/app/waitlists/forms";
 
 const fetcher = async url => {
   const res = await fetch(url)
@@ -22,7 +23,7 @@ const fetcher = async url => {
 const WAITLIST_API_URL = "/api/waitlists/"
 
 export default function Page() {
-  const {data, error, isLoading} = useSWR("http://127.0.0.1:8001/api/hello", fetcher)
+  const {data, error, isLoading} = useSWR(WAITLIST_API_URL, fetcher)
     const auth = useAuth()
     useEffect(() => {
         if (error?.status === 401) {
@@ -34,6 +35,7 @@ export default function Page() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        <WaitlistForm />
       <div>
         {JSON.stringify(data)}
       </div>
