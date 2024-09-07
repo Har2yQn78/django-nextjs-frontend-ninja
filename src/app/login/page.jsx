@@ -31,9 +31,16 @@ export default function Page() {
     }
 
     const response = await fetch(LOGIN_URL, requestOptions)
+    let data = {}
+      try {
+        data = await response.json()
+      } catch (error){
+
+      }
+
     if (response.ok) {
       console.log("Logged in")
-      auth.login()
+      auth.login(data?.username)
     } else {
       console.error("Login failed")
       console.log(await response.json())
@@ -65,12 +72,6 @@ export default function Page() {
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/forgot-password"
-                    className="hidden"
-                  >
-                    Forgot your password?
-                  </Link>
                 </div>
                 <Input id="password" name="password" type="password" required />
               </div>
