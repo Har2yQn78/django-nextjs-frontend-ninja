@@ -3,7 +3,9 @@ import {NextResponse} from "next/server";
 import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss";
 import {setRefreshToken, setToken} from "@/lib/auth";
 import {console} from "next/dist/compiled/@edge-runtime/primitives";
-const DJANGO_API_LOGIN_URL = "http://127.0.0.1:8001/api/token/pair"
+import {DJANGO_API_ENDPOINT} from "@/config/default";
+
+const DJANGO_API_LOGIN_URL = `${DJANGO_API_ENDPOINT}/token/pair`
 export async function POST(request) {
     try {
         const requestData = await request.json();
