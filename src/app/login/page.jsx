@@ -1,54 +1,48 @@
 "use client"
+
 import Image from "next/image"
 import Link from "next/link"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuth } from "@/components/authProvider"
 
-const LOGIN_URL = "api/login/"
+const LOGIN_URL = "/api/login/"
 
-export const description =
-  "A login page with two columns. The first column has the login form with email and password. There's a Forgot your password link and a link to sign up if you do not have an account. The second column has a cover image."
 
 export default function Page() {
   const auth = useAuth()
+  async function handleSubmit (event) {
+        event.preventDefault()
+        console.log(event, event.target)
+        const formData = new FormData(event.target)
+        const objectFromForm = Object.fromEntries(formData)
+        const jsonData = JSON.stringify(objectFromForm)
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: jsonData
+        }
+        const response = await fetch(LOGIN_URL, requestOptions)
+        let data = {}
+        try {
+          data = await response.json()
+        } catch (error) {
 
-  async function handleSubmit(event) {
-    event.preventDefault()
-    console.log(event, event.target)
-
-    const formData = new FormData(event.target)
-    const objectFromForm = Object.fromEntries(formData)
-    const jsonData = JSON.stringify(objectFromForm)
-
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: jsonData,
+        }
+        // const data = await response.json()
+        if (response.ok) {
+            console.log("logged in")
+            auth.login(data?.username)
+        } else {
+          console.log(await response.json())
+        }
     }
-
-    const response = await fetch(LOGIN_URL, requestOptions)
-    let data = {}
-      try {
-        data = await response.json()
-      } catch (error){
-
-      }
-
-    if (response.ok) {
-      console.log("Logged in")
-      auth.login(data?.username)
-    } else {
-      console.error("Login failed")
-      console.log(await response.json())
-    }
-  }
-
   return (
-    <div className="w-full lg:grid lg:min-h-[85vh] lg:grid-cols-2 xl:min-h-[90vh]">
+    <div className="w-full lg:grid lg:min-h-[85vh]  lg:grid-cols-2 xl:min-h-[90vh]">
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
@@ -59,25 +53,31 @@ export default function Page() {
           </div>
           <div className="grid gap-4">
             <form onSubmit={handleSubmit}>
-              <div className="grid gap-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  type="text"
-                  name="username"
-                  placeholder="Your Username"
-                  required
-                />
+            <div className="grid gap-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="username"
+                name="username"
+                placeholder="Your username"
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <div className="flex items-center">
+                <Label htmlFor="password">Password</Label>
+                <Link
+                  href="/forgot-password"
+                  className="hidden"
+                >
+                  Forgot your password?
+                </Link>
               </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                </div>
-                <Input id="password" name="password" type="password" required />
-              </div>
-              <Button type="submit" className="w-full">
-                Login
-              </Button>
+              <Input id="password" name="password" type="password" required />
+            </div>
+            <Button type="submit" className="w-full">
+              Login
+            </Button>
             </form>
           </div>
           <div className="mt-4 text-center text-sm">

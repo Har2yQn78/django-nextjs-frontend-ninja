@@ -1,19 +1,19 @@
-import { getToken } from "@/lib/auth";
-import { NextResponse } from "next/server";
+
+import { getToken } from "@/lib/auth"
+
 
 export default class ApiProxy {
 
     static async getHeaders(requireAuth) {
         let headers = {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            };
-
-            const authToken = getToken();
-            if (authToken && requireAuth) {
-                headers["Authorization"] = `Bearer ${authToken}`;
-            }
-            return headers
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
+        const authToken = getToken()
+        if (authToken && requireAuth === true) {
+            headers["Authorization"] = `Bearer ${authToken}`
+        }
+        return headers
     }
 
     static async handleFetch(endpoint, requestOptions) {
@@ -23,45 +23,51 @@ export default class ApiProxy {
             const response = await fetch(endpoint, requestOptions)
             data = await response.json()
             status = response.status
-        }catch (error){
-            date = {message: "Cannot reach API server", error:error}
+        } catch (error) {
+            data = {message: "Cannot reach API server", error: error}
             status = 500
         }
         return {data, status}
+
     }
 
+    static async put(endpoint, object, requireAuth) {
+        const jsonData = JSON.stringify(object)
+        const headers = await ApiProxy.getHeaders(requireAuth)
+        const requestOptions = {
+            method: "PUT",
+            headers: headers,
+            body: jsonData
+        }
+        return await ApiProxy.handleFetch(endpoint, requestOptions)
+    }
 
+    static async delete(endpoint, requireAuth) {
+        const headers = await ApiProxy.getHeaders(requireAuth)
+        const requestOptions = {
+            method: "DELETE",
+            headers: headers,
+        }
+        return await ApiProxy.handleFetch(endpoint, requestOptions)
+    }
 
     static async post(endpoint, object, requireAuth) {
-        try {
-            const jsonData = JSON.stringify(object);
-            const headers = await ApiProxy.getHeaders(requireAuth)
-            const requestOptions = {
-                method: "POST",
-                headers: headers,
-                body: jsonData
-            };
-
-            return await ApiProxy.handleFetch(endpoint, requestOptions);
-        } catch (error) {
-            console.error("Error in ApiProxy.post:", error);
-            return NextResponse.error();
+        const jsonData = JSON.stringify(object)
+        const headers = await ApiProxy.getHeaders(requireAuth)
+        const requestOptions = {
+            method: "POST",
+            headers: headers,
+            body: jsonData
         }
+        return await ApiProxy.handleFetch(endpoint, requestOptions)
     }
 
-
     static async get(endpoint, requireAuth) {
-        try {
-            const headers = await ApiProxy.getHeaders(requireAuth)
-            const requestOptions = {
-                method: "GET",
-                headers: headers
-            };
-
-            return await ApiProxy.handleFetch(endpoint, requestOptions);
-        } catch (error) {
-            console.error("Error in ApiProxy.post:", error);
-            return NextResponse.error();
+        const headers = await ApiProxy.getHeaders(requireAuth)
+        const requestOptions = {
+            method: "GET",
+            headers: headers
         }
+        return await ApiProxy.handleFetch(endpoint, requestOptions)
     }
 }
